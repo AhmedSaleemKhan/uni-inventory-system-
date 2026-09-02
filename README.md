@@ -135,13 +135,33 @@ migration step is required for first run.
 ## 9. Packaging (optional, PyInstaller)
 
 ```bash
-pyinstaller --name UAIMS --windowed --onefile main.py
+pyinstaller --name UAIMS --windowed --onefile --add-data "assets:assets" main.py
+# Windows note: use a semicolon separator instead: --add-data "assets;assets"
 ```
 
-The generated executable will be under `dist/`. Because UAIMS creates its
-database and asset folders relative to the project directory, when
-distributing a packaged build you should ship the `assets/` folder
-alongside the executable (PyInstaller's `--add-data` flag can bundle it).
+The generated executable will be under `dist/`.
+
+**Where packaged data lives.** When run from source (`python main.py`),
+the database, backups, exports, reports, and logs live next to the
+project files, as usual. When run as a packaged executable, `sys.frozen`
+is detected and all of that is instead stored in a per-user data
+directory so it survives restarts (a PyInstaller `--onefile` build
+extracts to a temporary folder that is wiped after every run, so writing
+there would silently lose all data between launches):
+
+| OS      | Data directory                                  |
+|---------|--------------------------------------------------|
+| Windows | `%LOCALAPPDATA%\UAIMS`                            |
+| macOS   | `~/Library/Application Support/UAIMS`             |
+| Linux   | `$XDG_DATA_HOME/UAIMS` (default `~/.local/share/UAIMS`) |
+
+**Prebuilt installers via CI.** `.github/workflows/build-installers.yml`
+builds a Windows `.exe`, a Linux binary, and a macOS app on every push to
+`main` (and on demand via the Actions tab's "Run workflow" button), since
+PyInstaller cannot cross-compile — each platform's build must run on that
+platform. Grab the artifact for your OS from the workflow run's
+**Artifacts** section on GitHub and run it directly; no Python install
+required on the target machine.
 
 ## 10. Running Tests
 
