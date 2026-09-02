@@ -6,6 +6,8 @@ This is the `app` object Vercel's Python runtime looks for.
 
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -39,7 +41,16 @@ def _bootstrap() -> None:
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "app": config.APP_NAME}
+    # commit/database_configured exist to answer "is this actually the
+    # deployment I think it is" from one URL, without needing to trust a
+    # dashboard label - VERCEL_GIT_COMMIT_SHA is set automatically by
+    # Vercel at build and runtime, no configuration needed.
+    return {
+        "status": "ok",
+        "app": config.APP_NAME,
+        "commit": os.getenv("VERCEL_GIT_COMMIT_SHA", "not running on Vercel"),
+        "database_configured": bool(os.getenv("DATABASE_URL")),
+    }
 
 
 app.include_router(auth.router)
