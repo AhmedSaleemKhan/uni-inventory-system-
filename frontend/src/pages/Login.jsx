@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import Footer from "../components/Footer";
 
 export default function Login() {
   const { login } = useAuth();
@@ -27,22 +28,25 @@ export default function Login() {
 
   return (
     <div className="login-screen">
-      <div className="login-brand">
-        <h1>UAIMS</h1>
-        <p>University Administration
-          <br />Inventory &amp; Office
-          <br />Management System</p>
+      <div className="login-body">
+        <div className="login-brand">
+          <h1>UAIMS</h1>
+          <p>University Administration
+            <br />Inventory &amp; Office
+            <br />Management System</p>
+        </div>
+        <div className="login-form-panel">
+          <form className="login-form" onSubmit={handleSubmit}>
+            <h2>Sign in to your account</h2>
+            <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} autoFocus />
+            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            {error && <div className="error-banner">{error}</div>}
+            <button className="btn" type="submit" disabled={busy}>{busy ? "Signing in..." : "Login"}</button>
+            <div className="login-hint">Default: admin / admin123</div>
+          </form>
+        </div>
       </div>
-      <div className="login-form-panel">
-        <form className="login-form" onSubmit={handleSubmit}>
-          <h2>Sign in to your account</h2>
-          <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} autoFocus />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {error && <div className="error-banner">{error}</div>}
-          <button className="btn" type="submit" disabled={busy}>{busy ? "Signing in..." : "Login"}</button>
-          <div className="login-hint">Default: admin / admin123</div>
-        </form>
-      </div>
+      <Footer />
     </div>
   );
 }

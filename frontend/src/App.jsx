@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth, hasPermission } from "./context/AuthContext";
 import Sidebar from "./components/Sidebar";
+import Footer from "./components/Footer";
 
 import Login from "./pages/Login";
 import ForceChangePassword from "./pages/ForceChangePassword";
@@ -47,6 +48,7 @@ function Layout() {
         <div className="page">
           <Outlet />
         </div>
+        <Footer />
       </div>
     </div>
   );
