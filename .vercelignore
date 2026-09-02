@@ -3,18 +3,25 @@
 # where pyside6-essentials/pyside6-addons/numpy/pandas/matplotlib were
 # coming from, blowing the Python function bundle past 500MB) - excluding
 # it here stops Vercel from ever seeing it.
-requirements.txt
-main.py
-config.py
-ui/
-auth/
-database/
-utils/
-tests/
-assets/
-.github/
-venv/
-backups/
-exports/
-logs/
-reports/
+#
+# Every pattern below is anchored with a leading "/" on purpose: gitignore
+# syntax (which .vercelignore follows) matches an unanchored pattern like
+# "main.py" at ANY depth, which silently also excluded api/app/main.py,
+# api/app/config.py, api/requirements.txt, and frontend/dist/assets/ -
+# breaking the actual web app. Anchoring restricts each pattern to the
+# repo root only, where the desktop app's own files live.
+/requirements.txt
+/main.py
+/config.py
+/ui/
+/auth/
+/database/
+/utils/
+/tests/
+/assets/
+/.github/
+/venv/
+/backups/
+/exports/
+/logs/
+/reports/
