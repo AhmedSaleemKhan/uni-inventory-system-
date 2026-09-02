@@ -28,6 +28,12 @@ assets/images/*
 !backups/.gitkeep
 !logs/.gitkeep
 
+# Web app (frontend/ + api/)
+node_modules/
+api/*.db
+api/.vercel/
+.vercel/
+
 # OS / editor
 .DS_Store
 .vscode/

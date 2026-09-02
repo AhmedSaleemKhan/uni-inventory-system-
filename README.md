@@ -220,3 +220,84 @@ redistribute according to your institution's software policies.
   there when adding new protected features.
 - New feature pages should be registered in `ui/main_window.py`
   (`NAV_ITEMS` + `_page_factories`).
+
+## 15. Web App (React + FastAPI)
+
+Everything above describes the original PySide6 desktop app. `frontend/`
+and `api/` are a second, independent implementation of the same system
+as a browser-based web app — same features, same role/permission matrix,
+same demo accounts — built so it can be deployed on Vercel.
+
+**Stack:** FastAPI (Python) + SQLAlchemy backend, JWT auth, exposed as a
+Vercel Python serverless function at `/api/*`; a React + Vite frontend
+built to static files and served at `/`.
+
+### Local development
+
+Backend (from `api/`):
+
+```bash
+cd api
+python3 -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn index:app --reload --port 8000
+```
+
+On first request it creates and seeds a local SQLite file
+(`api/uaims_web.db`) with the same demo data as the desktop app — same
+default logins (`admin` / `admin123`, etc., see section 7 above).
+
+Frontend (from `frontend/`, in a separate terminal):
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the URL Vite prints (typically `http://localhost:5173`) — its dev
+server proxies `/api/*` to `http://127.0.0.1:8000`, so no CORS setup is
+needed locally.
+
+### Environment variables
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `DATABASE_URL` | SQLAlchemy database URL. Set to a Postgres URL for a real deployment - without it, data is stored on a local/ephemeral disk. | local SQLite file (`/tmp` when `VERCEL` is set) |
+| `JWT_SECRET` | Signing key for login tokens. **Set this to a long random value in any real deployment** - the default is not secure. | `dev-only-secret-change-me` |
+| `ORG_NAME` | Organization name shown in the UI and PDF/Excel reports. | `PAF-IAST` |
+| `CORS_ORIGINS` | Comma-separated allowed origins for the API. | `*` |
+
+### Deploying on Vercel
+
+The repo's `vercel.json` builds the React app as static output and the
+FastAPI app as a Python serverless function in one deployment - importing
+this repo on [vercel.com/new](https://vercel.com/new) needs no other
+configuration. Before (or after) the first deploy, set `DATABASE_URL` and
+`JWT_SECRET` under Project Settings → Environment Variables.
+
+**Getting a free Postgres database (needed for data to persist):**
+Vercel's serverless functions don't have a persistent local disk, so a
+real deployment needs a real database - a hosted SQLite file won't
+survive between requests. [Neon](https://neon.tech) has a free tier that
+pairs well with Vercel:
+
+1. Sign up at neon.tech (free, no credit card) and create a project.
+2. Copy the connection string it gives you (starts with `postgresql://`).
+3. In the Vercel project → Settings → Environment Variables, add
+   `DATABASE_URL` with that value, then redeploy.
+
+No other code changes are needed - the backend already runs against
+either SQLite or Postgres depending on what `DATABASE_URL` is set to.
+
+### Notes
+
+- PDF (ReportLab), Excel (OpenPyXL), and CSV report export all work the
+  same as the desktop app's Reports Center, downloaded via the browser
+  instead of a save dialog.
+- QR/barcode image generation from the desktop app is not included in
+  the web app - it's a smaller-scope port focused on the CRUD and
+  reporting workflows.
+- Light/dark theme is a per-browser preference (`localStorage`), toggled
+  from Settings, same as the desktop app.
