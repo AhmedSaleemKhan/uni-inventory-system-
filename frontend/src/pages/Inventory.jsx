@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 import { api } from "../api/client";
 import { useAuth, hasPermission } from "../context/AuthContext";
 import DataTable from "../components/DataTable";
@@ -85,14 +86,14 @@ export default function Inventory() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="Inventory Management" columns={columns} rows={items}
-        addLabel="+ Add Item" canAdd={canManage}
+        addLabel="Add Item" canAdd={canManage}
         onAdd={() => { setEditing(null); setShowModal(true); }}
         filterOptions={categories} filterKey="category"
         selectedId={selected?.id} onSelectRow={setSelected}
         extraActions={canManage && (
           <>
-            <button className="btn secondary" disabled={!selected} onClick={() => { setEditing(selected); setShowModal(true); }}>Edit Selected</button>
-            <button className="btn danger" disabled={!selected} onClick={handleDelete}>Delete Selected</button>
+            <button className="btn secondary" disabled={!selected} onClick={() => { setEditing(selected); setShowModal(true); }}><Pencil size={14} /> Edit Selected</button>
+            <button className="btn danger" disabled={!selected} onClick={handleDelete}><Trash2 size={14} /> Delete Selected</button>
           </>
         )}
       />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FileText, FileSpreadsheet, FileDown } from "lucide-react";
 import { api, downloadBlob } from "../api/client";
 
 const REPORT_TYPES = [
@@ -38,13 +39,13 @@ export default function Reports() {
         </select>
         <div className="spacer" />
         <button className="btn secondary" disabled={!!exporting} onClick={() => handleExport("pdf")}>
-          {exporting === "pdf" ? "Exporting..." : "Export PDF"}
+          <FileText size={14} /> {exporting === "pdf" ? "Exporting..." : "Export PDF"}
         </button>
         <button className="btn secondary" disabled={!!exporting} onClick={() => handleExport("xlsx")}>
-          {exporting === "xlsx" ? "Exporting..." : "Export Excel"}
+          <FileSpreadsheet size={14} /> {exporting === "xlsx" ? "Exporting..." : "Export Excel"}
         </button>
         <button className="btn secondary" disabled={!!exporting} onClick={() => handleExport("csv")}>
-          {exporting === "csv" ? "Exporting..." : "Export CSV"}
+          <FileDown size={14} /> {exporting === "csv" ? "Exporting..." : "Export CSV"}
         </button>
       </div>
 

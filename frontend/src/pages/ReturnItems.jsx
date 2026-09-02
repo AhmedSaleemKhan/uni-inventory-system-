@@ -56,7 +56,7 @@ export default function ReturnItems() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="Return Management" columns={columns} rows={records}
-        addLabel="+ Record Return" onAdd={openReturn}
+        addLabel="Record Return" onAdd={openReturn}
         filterOptions={["Issued", "Returned", "Overdue"]} filterKey="status"
         selectedId={selected?.id} onSelectRow={setSelected}
       />

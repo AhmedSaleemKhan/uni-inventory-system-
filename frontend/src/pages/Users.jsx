@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ToggleLeft, KeyRound } from "lucide-react";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import DataTable from "../components/DataTable";
@@ -70,13 +71,13 @@ export default function Users() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="User Management" columns={columns} rows={users}
-        addLabel="+ Add User" onAdd={() => setShowModal(true)}
+        addLabel="Add User" onAdd={() => setShowModal(true)}
         filterOptions={ROLES} filterKey="role"
         selectedId={selected?.id} onSelectRow={setSelected}
         extraActions={
           <>
-            <button className="btn secondary" onClick={toggleActive}>Toggle Active/Inactive</button>
-            <button className="btn danger" onClick={resetPassword}>Reset Password</button>
+            <button className="btn secondary" onClick={toggleActive}><ToggleLeft size={14} /> Toggle Active/Inactive</button>
+            <button className="btn danger" onClick={resetPassword}><KeyRound size={14} /> Reset Password</button>
           </>
         }
       />

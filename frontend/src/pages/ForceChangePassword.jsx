@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { X, KeyRound } from "lucide-react";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 
@@ -49,8 +50,8 @@ export default function ForceChangePassword() {
             <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
           </div>
           <div className="modal-actions">
-            <button type="button" className="btn secondary" onClick={logout}>Cancel</button>
-            <button type="submit" className="btn" disabled={busy}>{busy ? "Saving..." : "Set New Password"}</button>
+            <button type="button" className="btn secondary" onClick={logout}><X size={14} /> Cancel</button>
+            <button type="submit" className="btn" disabled={busy}><KeyRound size={14} /> {busy ? "Saving..." : "Set New Password"}</button>
           </div>
         </form>
       </div>

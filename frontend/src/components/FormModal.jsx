@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { X, Check } from "lucide-react";
 
 /**
  * Generic add/edit form modal, driven by a field-spec list - the same
@@ -85,8 +86,8 @@ export default function FormModal({ title, fields, initial, onSave, onClose }) {
             </div>
           ))}
           <div className="modal-actions">
-            <button type="button" className="btn secondary" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn" disabled={saving}>{saving ? "Saving..." : "Save"}</button>
+            <button type="button" className="btn secondary" onClick={onClose}><X size={14} /> Cancel</button>
+            <button type="submit" className="btn" disabled={saving}><Check size={14} /> {saving ? "Saving..." : "Save"}</button>
           </div>
         </form>
       </div>

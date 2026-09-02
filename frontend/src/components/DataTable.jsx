@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Plus, Search } from "lucide-react";
 
 /**
  * Generic "title + search + filter + add button + table" page shell -
@@ -27,14 +28,17 @@ export default function DataTable({
         <h1 className="page-title-heading" style={{ marginBottom: 0, marginRight: 8 }}>{title}</h1>
         <div className="spacer" />
         {extraActions}
-        <input type="text" placeholder="Search..." value={query} onChange={(e) => setQuery(e.target.value)} />
+        <div className="search-wrap">
+          <Search size={14} />
+          <input type="text" placeholder="Search..." value={query} onChange={(e) => setQuery(e.target.value)} />
+        </div>
         {filterOptions && (
           <select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option>All</option>
             {filterOptions.map((o) => <option key={o}>{o}</option>)}
           </select>
         )}
-        {canAdd && onAdd && <button className="btn" onClick={onAdd}>{addLabel || "+ Add New"}</button>}
+        {canAdd && onAdd && <button className="btn" onClick={onAdd}><Plus size={15} strokeWidth={2.5} />{addLabel || "Add New"}</button>}
       </div>
 
       <div className="table-wrap">

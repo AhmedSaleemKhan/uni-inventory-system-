@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PackageCheck, CircleCheck, CircleX } from "lucide-react";
 import { api } from "../api/client";
 import { useAuth, hasPermission } from "../context/AuthContext";
 import DataTable from "../components/DataTable";
@@ -67,14 +68,14 @@ export default function Documents() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="Document Tracking" columns={columns} rows={docs}
-        addLabel="+ Add Document" canAdd={canManage} onAdd={() => setShowModal(true)}
+        addLabel="Add Document" canAdd={canManage} onAdd={() => setShowModal(true)}
         filterOptions={STATUSES} filterKey="status"
         selectedId={selected?.id} onSelectRow={setSelected}
         extraActions={canManage && (
           <>
-            <button className="btn secondary" onClick={() => updateStatus("Received")}>Mark Received</button>
-            <button className="btn success" onClick={() => updateStatus("Approved")}>Approve Selected</button>
-            <button className="btn danger" onClick={() => updateStatus("Rejected")}>Reject Selected</button>
+            <button className="btn secondary" onClick={() => updateStatus("Received")}><PackageCheck size={14} /> Mark Received</button>
+            <button className="btn success" onClick={() => updateStatus("Approved")}><CircleCheck size={14} /> Approve Selected</button>
+            <button className="btn danger" onClick={() => updateStatus("Rejected")}><CircleX size={14} /> Reject Selected</button>
           </>
         )}
       />

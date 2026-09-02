@@ -50,7 +50,7 @@ export default function Printing() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="Printing Management" columns={columns} rows={records}
-        addLabel="+ New Printing Job" canAdd={canManage} onAdd={() => setShowModal(true)}
+        addLabel="New Printing Job" canAdd={canManage} onAdd={() => setShowModal(true)}
         filterOptions={["Black & White", "Color"]} filterKey="color_mode"
       />
       {showModal && (

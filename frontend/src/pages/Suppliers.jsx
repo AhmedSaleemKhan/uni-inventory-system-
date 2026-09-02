@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 import { api } from "../api/client";
 import { useAuth, hasPermission } from "../context/AuthContext";
 import DataTable from "../components/DataTable";
@@ -58,13 +59,13 @@ export default function Suppliers() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="Supplier Management" columns={columns} rows={suppliers}
-        addLabel="+ Add Supplier" canAdd={canManage}
+        addLabel="Add Supplier" canAdd={canManage}
         onAdd={() => { setEditing(null); setShowModal(true); }}
         selectedId={selected?.id} onSelectRow={setSelected}
         extraActions={canManage && (
           <>
-            <button className="btn secondary" disabled={!selected} onClick={() => { setEditing(selected); setShowModal(true); }}>Edit Selected</button>
-            <button className="btn danger" disabled={!selected} onClick={handleDelete}>Delete Selected</button>
+            <button className="btn secondary" disabled={!selected} onClick={() => { setEditing(selected); setShowModal(true); }}><Pencil size={14} /> Edit Selected</button>
+            <button className="btn danger" disabled={!selected} onClick={handleDelete}><Trash2 size={14} /> Delete Selected</button>
           </>
         )}
       />

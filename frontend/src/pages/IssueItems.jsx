@@ -54,7 +54,7 @@ export default function IssueItems() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="Inventory Issue" columns={columns} rows={records}
-        addLabel="+ Issue Item" canAdd={canManage} onAdd={() => setShowModal(true)}
+        addLabel="Issue Item" canAdd={canManage} onAdd={() => setShowModal(true)}
         filterOptions={["Issued", "Returned", "Overdue"]} filterKey="status"
       />
       {showModal && (

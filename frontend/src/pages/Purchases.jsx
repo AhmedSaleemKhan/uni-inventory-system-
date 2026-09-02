@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Plus, Trash2, X, CircleDollarSign } from "lucide-react";
 import { api } from "../api/client";
 import { useAuth, hasPermission } from "../context/AuthContext";
 import DataTable from "../components/DataTable";
@@ -93,15 +94,15 @@ function PurchaseOrderModal({ suppliers, items, onSave, onClose }) {
             <label>Unit Cost</label>
             <input type="number" min={0} step={0.01} value={unitCost} onChange={(e) => setUnitCost(parseFloat(e.target.value || "0"))} />
           </div>
-          <button type="button" className="btn secondary" onClick={addLine}>Add Line</button>
+          <button type="button" className="btn secondary" onClick={addLine}><Plus size={14} /> Add Line</button>
         </div>
 
         <div style={{ border: "1px solid var(--border)", borderRadius: 8, maxHeight: 140, overflowY: "auto", marginBottom: 10 }}>
           {lines.length === 0 && <div className="empty-state">No line items yet.</div>}
           {lines.map((l, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", fontSize: 13, borderTop: i > 0 ? "1px solid var(--border)" : "none" }}>
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 10px", fontSize: 13, borderTop: i > 0 ? "1px solid var(--border)" : "none" }}>
               <span>{l.item} x{l.quantity} @ Rs. {l.unit_cost.toFixed(2)} = Rs. {(l.quantity * l.unit_cost).toFixed(2)}</span>
-              <button type="button" className="btn danger" style={{ padding: "2px 8px", fontSize: 11 }} onClick={() => removeLine(i)}>Remove</button>
+              <button type="button" className="btn danger icon-only" onClick={() => removeLine(i)} aria-label="Remove line"><Trash2 size={13} /></button>
             </div>
           ))}
         </div>
@@ -109,9 +110,9 @@ function PurchaseOrderModal({ suppliers, items, onSave, onClose }) {
         <div style={{ fontWeight: 700, marginBottom: 12 }}>Total: Rs. {total.toFixed(2)}</div>
 
         <div className="modal-actions">
-          <button type="button" className="btn secondary" onClick={onClose}>Cancel</button>
+          <button type="button" className="btn secondary" onClick={onClose}><X size={14} /> Cancel</button>
           <button type="button" className="btn" disabled={saving} onClick={handleSubmit}>
-            {saving ? "Saving..." : "Create Purchase Order"}
+            <CircleDollarSign size={14} /> {saving ? "Saving..." : "Create Purchase Order"}
           </button>
         </div>
       </div>
@@ -170,9 +171,9 @@ export default function Purchases() {
       {error && <div className="error-banner">{error}</div>}
       <DataTable
         title="Purchase Orders" columns={columns} rows={orders}
-        addLabel="+ New Purchase Order" canAdd={canManage} onAdd={() => setShowModal(true)}
+        addLabel="New Purchase Order" canAdd={canManage} onAdd={() => setShowModal(true)}
         selectedId={selected?.id} onSelectRow={setSelected}
-        extraActions={canManage && <button className="btn success" onClick={markPaid}>Mark Paid</button>}
+        extraActions={canManage && <button className="btn success" onClick={markPaid}><CircleDollarSign size={14} /> Mark Paid</button>}
       />
       {showModal && (
         <PurchaseOrderModal suppliers={suppliers} items={items} onSave={handleSave} onClose={() => setShowModal(false)} />
