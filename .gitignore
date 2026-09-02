@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+env/
+build/
+dist/
+.pytest_cache/
+
+# Environment
+.env
+
+# Runtime-generated data (created automatically on first run)
+database/inventory.db
+database/*.db
+backups/*.db
+logs/*.log
+exports/*
+reports/*
+assets/images/*
+
+# Keep placeholder directories
+!exports/.gitkeep
+!reports/.gitkeep
+!backups/.gitkeep
+!logs/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
