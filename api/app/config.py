@@ -20,6 +20,18 @@ import os
 _default_sqlite_path = "/tmp/uaims_web.db" if os.getenv("VERCEL") else "./uaims_web.db"
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{_default_sqlite_path}")
 
+# A bare "postgresql://" (or Heroku-style "postgres://") URL - exactly what
+# Neon/Supabase/etc. hand you to copy-paste - makes SQLAlchemy default to
+# the psycopg2 driver. This project installs psycopg (v3) instead, so an
+# unmodified URL fails at engine-creation time with "No module named
+# 'psycopg2'" (crashing every request, since this runs at app startup).
+# Rewriting the scheme to explicitly request psycopg makes the pasted URL
+# work as-is instead of requiring anyone to know to edit it by hand.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL[len("postgres://"):]
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL[len("postgresql://"):]
+
 # ---------------------------------------------------------------------------
 # Auth
 # ---------------------------------------------------------------------------
