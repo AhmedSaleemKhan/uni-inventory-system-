@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { api } from "../api/client";
+import { Printer } from "lucide-react";
+import { api, downloadBlob } from "../api/client";
 import { useAuth, hasPermission } from "../context/AuthContext";
 import DataTable from "../components/DataTable";
 import FormModal from "../components/FormModal";
@@ -11,8 +12,10 @@ export default function IssueItems() {
   const [records, setRecords] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [items, setItems] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
+  const [printing, setPrinting] = useState(false);
 
   function load() {
     api.get("/issues").then(setRecords).catch((e) => setError(e.message));
@@ -37,6 +40,22 @@ export default function IssueItems() {
     load();
   }
 
+  async function printRequisition() {
+    if (!selected) {
+      alert("Please select an issue record first.");
+      return;
+    }
+    setPrinting(true);
+    try {
+      const blob = await api.file(`/issues/${selected.id}/requisition`);
+      downloadBlob(blob, `internal_requisition_${selected.id}.pdf`);
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setPrinting(false);
+    }
+  }
+
   const columns = [
     { key: "id", label: "ID" }, { key: "teacher", label: "Teacher" }, { key: "item", label: "Item" },
     { key: "quantity", label: "Qty" }, { key: "issue_date", label: "Issue Date" }, { key: "department", label: "Department" },
@@ -56,6 +75,12 @@ export default function IssueItems() {
         title="Inventory Issue" columns={columns} rows={records}
         addLabel="Issue Item" canAdd={canManage} onAdd={() => setShowModal(true)}
         filterOptions={["Issued", "Returned", "Overdue"]} filterKey="status"
+        selectedId={selected?.id} onSelectRow={setSelected}
+        extraActions={(
+          <button className="btn secondary" disabled={printing} onClick={printRequisition}>
+            <Printer size={14} /> {printing ? "Generating..." : "Print Requisition"}
+          </button>
+        )}
       />
       {showModal && (
         <FormModal title="Issue Item" fields={fields} onSave={handleSave} onClose={() => setShowModal(false)} />

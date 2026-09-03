@@ -44,6 +44,8 @@ JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "480"))
 # ---------------------------------------------------------------------------
 APP_NAME = "UAIMS - University Administration Inventory & Office Management System"
 ORG_NAME = os.getenv("ORG_NAME", "PAF-IAST")
+ORG_FULL_NAME = os.getenv("ORG_FULL_NAME", "Pak-Austria Fachhochschule: Institute of Applied Sciences & Technology")
+ORG_ADDRESS = os.getenv("ORG_ADDRESS", "Mang, Haripur, Khyber Pakhtunkhwa")
 
 DEFAULT_ADMIN_USERNAME = "admin"
 DEFAULT_ADMIN_PASSWORD = "admin123"
