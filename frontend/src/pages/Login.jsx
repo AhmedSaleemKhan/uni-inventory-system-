@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 
 const QUICK_ROLES = [
   { username: "admin", password: "admin123", name: "Super Admin", desc: "Full system access", icon: ShieldCheck, color: "#023e47" },
-  { username: "storekeeper", password: "password123", name: "Store Keeper", desc: "Inventory & purchases", icon: Package, color: "#028090" },
+  { username: "storekeeper", password: "password123", name: "Store Keeper", desc: "Inventory & stock", icon: Package, color: "#028090" },
   { username: "officestaff", password: "password123", name: "Office Staff", desc: "Issue items & documents", icon: Briefcase, color: "#2e8b57" },
   { username: "printstaff", password: "password123", name: "Printing Staff", desc: "Printing jobs", icon: Printer, color: "#a3690a" },
 ];

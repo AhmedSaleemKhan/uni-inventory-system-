@@ -12,8 +12,6 @@ import ReturnItems from "./pages/ReturnItems";
 import Printing from "./pages/Printing";
 import Teachers from "./pages/Teachers";
 import Documents from "./pages/Documents";
-import Suppliers from "./pages/Suppliers";
-import Purchases from "./pages/Purchases";
 import Reports from "./pages/Reports";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
@@ -26,8 +24,6 @@ const PAGE_TITLES = {
   "/printing": "Printing Management",
   "/teachers": "Teacher Management",
   "/documents": "Document Tracking",
-  "/suppliers": "Supplier Management",
-  "/purchases": "Purchase Orders",
   "/reports": "Reports Center",
   "/users": "User Management",
   "/settings": "Settings",
@@ -87,8 +83,6 @@ export default function App() {
         <Route path="/printing" element={<RequirePermission permission="manage_printing"><Printing /></RequirePermission>} />
         <Route path="/teachers" element={<RequirePermission permission="manage_teachers"><Teachers /></RequirePermission>} />
         <Route path="/documents" element={<RequirePermission permission="manage_documents"><Documents /></RequirePermission>} />
-        <Route path="/suppliers" element={<RequirePermission permission="manage_suppliers"><Suppliers /></RequirePermission>} />
-        <Route path="/purchases" element={<RequirePermission permission="manage_purchases"><Purchases /></RequirePermission>} />
         <Route path="/reports" element={<RequirePermission permission="view_reports"><Reports /></RequirePermission>} />
         <Route path="/users" element={<RequirePermission permission="manage_users"><Users /></RequirePermission>} />
         <Route path="/settings" element={<RequirePermission permission="manage_settings"><Settings /></RequirePermission>} />

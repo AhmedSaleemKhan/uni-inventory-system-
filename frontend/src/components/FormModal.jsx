@@ -10,7 +10,17 @@ export default function FormModal({ title, fields, initial, onSave, onClose }) {
   const [values, setValues] = useState(() => {
     const v = {};
     for (const f of fields) {
-      v[f.key] = initial?.[f.key] ?? f.default ?? (f.kind === "checkbox" ? false : f.kind === "number" ? 0 : "");
+      // A <select> with no blank placeholder option always shows its first
+      // option as selected in the browser, even if the bound value is "".
+      // Defaulting to "" here would then silently submit an empty string
+      // instead of the option the user sees highlighted - so a new record's
+      // untouched dropdown must default to that first real option instead.
+      v[f.key] = initial?.[f.key] ?? f.default ?? (
+        f.kind === "checkbox" ? false :
+        f.kind === "number" ? 0 :
+        f.kind === "select" ? (f.options?.[0] ?? "") :
+        ""
+      );
     }
     return v;
   });

@@ -4,7 +4,7 @@ import { api, downloadBlob } from "../api/client";
 
 const REPORT_TYPES = [
   "Inventory Report", "Low Stock Report", "Teacher Report", "Printing Report",
-  "Issue Report", "Return Report", "Purchase Report", "Supplier Report", "Pending Documents Report",
+  "Issue Report", "Return Report", "Pending Documents Report",
 ];
 
 export default function Reports() {

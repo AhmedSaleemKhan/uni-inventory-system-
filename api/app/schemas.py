@@ -63,33 +63,12 @@ class UserOut(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Categories / Suppliers
+# Categories
 # ---------------------------------------------------------------------------
 class CategoryOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     name: str
-
-
-class SupplierIn(BaseModel):
-    name: str
-    address: Optional[str] = ""
-    phone: Optional[str] = ""
-    email: Optional[str] = ""
-    gst_number: Optional[str] = ""
-    notes: Optional[str] = ""
-
-
-class SupplierOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-    name: str
-    address: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    gst_number: Optional[str] = None
-    notes: Optional[str] = None
-    total_purchases: float = 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -100,15 +79,10 @@ class ItemIn(BaseModel):
     name: str
     description: Optional[str] = ""
     brand: Optional[str] = ""
-    supplier: Optional[str] = None
-    purchase_date: Optional[dt.date] = None
-    purchase_cost: float = 0.0
-    selling_cost: float = 0.0
     unit: str = "pcs"
     current_quantity: int = 0
     minimum_quantity: int = 10
     maximum_quantity: int = 1000
-    storage_location: Optional[str] = ""
     status: str = "Active"
     notes: Optional[str] = ""
 
@@ -120,15 +94,10 @@ class ItemOut(BaseModel):
     name: str
     description: Optional[str] = None
     brand: Optional[str] = None
-    supplier: Optional[str] = None
-    purchase_date: Optional[dt.date] = None
-    purchase_cost: float
-    selling_cost: float
     unit: str
     current_quantity: int
     minimum_quantity: int
     maximum_quantity: int
-    storage_location: Optional[str] = None
     status: str
     notes: Optional[str] = None
     is_low_stock: bool
@@ -255,31 +224,6 @@ class DocumentOut(BaseModel):
     received_date: dt.date
     status: str
     approved_by: Optional[str] = None
-
-
-# ---------------------------------------------------------------------------
-# Purchases
-# ---------------------------------------------------------------------------
-class PurchaseLineIn(BaseModel):
-    item: str
-    quantity: int
-    unit_cost: float
-
-
-class PurchaseOrderIn(BaseModel):
-    supplier: str
-    tax_percent: float = 0.0
-    lines: List[PurchaseLineIn]
-
-
-class PurchaseOrderOut(BaseModel):
-    id: int
-    invoice_number: str
-    supplier: str
-    order_date: dt.date
-    tax_percent: float
-    total_amount: float
-    payment_status: str
 
 
 # ---------------------------------------------------------------------------

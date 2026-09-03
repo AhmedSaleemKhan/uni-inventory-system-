@@ -14,7 +14,6 @@ export default function Inventory() {
 
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
   const [editing, setEditing] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -23,7 +22,6 @@ export default function Inventory() {
   function load() {
     api.get("/inventory").then(setItems).catch((e) => setError(e.message));
     api.get("/inventory/categories").then((cs) => setCategories(cs.map((c) => c.name))).catch(() => {});
-    api.get("/suppliers").then((ss) => setSuppliers(ss.map((s) => s.name))).catch(() => {});
   }
   useEffect(load, []);
 
@@ -32,15 +30,10 @@ export default function Inventory() {
     { key: "name", label: "Item Name", required: true },
     { key: "description", label: "Description", kind: "textarea" },
     { key: "brand", label: "Brand" },
-    { key: "supplier", label: "Supplier", kind: "select", options: ["", ...suppliers] },
-    { key: "purchase_date", label: "Purchase Date", kind: "date" },
-    { key: "purchase_cost", label: "Purchase Cost", kind: "number", step: 0.01, max: 1000000 },
-    { key: "selling_cost", label: "Selling Cost", kind: "number", step: 0.01, max: 1000000 },
     { key: "unit", label: "Unit", kind: "select", options: UNITS },
     { key: "current_quantity", label: "Current Quantity", kind: "number", max: 100000 },
     { key: "minimum_quantity", label: "Minimum Quantity", kind: "number", max: 100000, default: 10 },
     { key: "maximum_quantity", label: "Maximum Quantity", kind: "number", max: 1000000, default: 1000 },
-    { key: "storage_location", label: "Storage Location" },
     { key: "status", label: "Status", kind: "select", options: STATUSES },
     { key: "notes", label: "Notes", kind: "textarea" },
   ];
@@ -67,11 +60,8 @@ export default function Inventory() {
 
   const columns = [
     { key: "id", label: "ID" }, { key: "barcode", label: "Barcode" }, { key: "category", label: "Category" },
-    { key: "name", label: "Name" }, { key: "brand", label: "Brand" }, { key: "supplier", label: "Supplier" },
+    { key: "name", label: "Name" }, { key: "brand", label: "Brand" },
     { key: "unit", label: "Unit" }, { key: "current_quantity", label: "Qty" }, { key: "minimum_quantity", label: "Min Qty" },
-    { key: "purchase_cost", label: "Purchase Cost", render: (r) => `Rs. ${r.purchase_cost.toFixed(2)}` },
-    { key: "selling_cost", label: "Selling Cost", render: (r) => `Rs. ${r.selling_cost.toFixed(2)}` },
-    { key: "storage_location", label: "Location" },
     {
       key: "status", label: "Status", render: (r) => (
         <span className={`pill ${r.is_out_of_stock ? "danger" : r.is_low_stock ? "warn" : "success"}`}>

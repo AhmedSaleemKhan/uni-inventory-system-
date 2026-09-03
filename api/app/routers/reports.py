@@ -8,18 +8,14 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from ..database import db_dependency
-from ..models import (
-    Item, Teacher, PrintingRecord, IssueRecord, ReturnRecord,
-    PurchaseOrder, Supplier, DocumentRecord,
-)
+from ..models import Item, Teacher, PrintingRecord, IssueRecord, ReturnRecord, DocumentRecord
 from ..security import require_permission, CurrentUser
 
 router = APIRouter(prefix="/api/reports", tags=["reports"])
 
 REPORT_TYPES = [
     "Inventory Report", "Low Stock Report", "Teacher Report",
-    "Printing Report", "Issue Report", "Return Report",
-    "Purchase Report", "Supplier Report", "Pending Documents Report",
+    "Printing Report", "Issue Report", "Return Report", "Pending Documents Report",
 ]
 
 
@@ -30,9 +26,8 @@ def _build(report_type: str, db: Session) -> tuple[list[str], list[list]]:
                  i.current_quantity, i.minimum_quantity, i.unit, i.status]
                 for i in db.query(Item).all()]
     elif report_type == "Low Stock Report":
-        headers = ["ID", "Name", "Category", "Current Qty", "Minimum Qty", "Storage Location"]
-        rows = [[i.id, i.name, i.category.name if i.category else "-", i.current_quantity,
-                 i.minimum_quantity, i.storage_location or "-"]
+        headers = ["ID", "Name", "Category", "Current Qty", "Minimum Qty"]
+        rows = [[i.id, i.name, i.category.name if i.category else "-", i.current_quantity, i.minimum_quantity]
                 for i in db.query(Item).all() if i.is_low_stock]
     elif report_type == "Teacher Report":
         headers = ["ID", "Employee ID", "Name", "Department", "Designation", "Status"]
@@ -50,14 +45,6 @@ def _build(report_type: str, db: Session) -> tuple[list[str], list[list]]:
         headers = ["Issue ID", "Returned Qty", "Return Date", "Condition", "Late?"]
         rows = [[rr.issue_id, rr.returned_quantity, rr.return_date, rr.condition, "Yes" if rr.is_late else "No"]
                 for rr in db.query(ReturnRecord).all()]
-    elif report_type == "Purchase Report":
-        headers = ["ID", "Invoice #", "Supplier", "Order Date", "Total", "Payment Status"]
-        rows = [[po.id, po.invoice_number, po.supplier.name if po.supplier else "-", po.order_date,
-                 po.total_amount, po.payment_status] for po in db.query(PurchaseOrder).all()]
-    elif report_type == "Supplier Report":
-        headers = ["ID", "Name", "Phone", "Email", "GST Number"]
-        rows = [[s.id, s.name, s.phone or "-", s.email or "-", s.gst_number or "-"]
-                for s in db.query(Supplier).all()]
     elif report_type == "Pending Documents Report":
         headers = ["ID", "Type", "Title", "Department", "Received Date"]
         rows = [[d.id, d.document_type, d.title, d.department or "-", d.received_date]

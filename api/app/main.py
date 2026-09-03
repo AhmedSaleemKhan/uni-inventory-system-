@@ -16,7 +16,7 @@ from .database import init_db
 from .seed import seed_all
 from .routers import (
     auth, dashboard, inventory, teachers, issues, printing,
-    documents, suppliers, purchases, reports, users,
+    documents, reports, users,
 )
 
 app = FastAPI(title=config.APP_NAME)
@@ -60,7 +60,5 @@ app.include_router(teachers.router)
 app.include_router(issues.router)
 app.include_router(printing.router)
 app.include_router(documents.router)
-app.include_router(suppliers.router)
-app.include_router(purchases.router)
 app.include_router(reports.router)
 app.include_router(users.router)

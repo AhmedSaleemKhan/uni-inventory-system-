@@ -10,7 +10,10 @@ const DEPARTMENTS = [
   "Mechanical Engineering", "Civil Engineering", "Business Administration",
   "Applied Physics", "Mathematics", "English", "Humanities",
 ];
-const DESIGNATIONS = ["Lecturer", "Assistant Professor", "Associate Professor", "Professor", "Visiting Faculty"];
+const DESIGNATIONS = [
+  "Lecturer", "Assistant Professor", "Associate Professor", "Professor", "Visiting Faculty",
+  "Lab Engineer", "Administrative Staff",
+];
 const STATUSES = ["Active", "On Leave", "Retired"];
 
 export default function Teachers() {

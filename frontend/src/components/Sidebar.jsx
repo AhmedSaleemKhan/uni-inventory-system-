@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard, Package, ArrowUpFromLine, ArrowDownToLine, Printer,
-  GraduationCap, FileText, Truck, ShoppingCart, BarChart3, UserCog, Settings, LogOut, Boxes,
+  GraduationCap, FileText, BarChart3, UserCog, Settings, LogOut, Boxes,
 } from "lucide-react";
 import { hasPermission } from "../context/AuthContext";
 
@@ -13,8 +13,6 @@ const NAV_ITEMS = [
   { to: "/printing", label: "Printing", permission: "manage_printing", icon: Printer },
   { to: "/teachers", label: "Teachers", permission: "manage_teachers", icon: GraduationCap },
   { to: "/documents", label: "Documents", permission: "manage_documents", icon: FileText },
-  { to: "/suppliers", label: "Suppliers", permission: "manage_suppliers", icon: Truck },
-  { to: "/purchases", label: "Purchases", permission: "manage_purchases", icon: ShoppingCart },
   { to: "/reports", label: "Reports", permission: "view_reports", icon: BarChart3 },
   { to: "/users", label: "Users", permission: "manage_users", icon: UserCog },
   { to: "/settings", label: "Settings", permission: "manage_settings", icon: Settings },

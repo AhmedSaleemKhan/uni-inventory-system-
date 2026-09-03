@@ -10,8 +10,6 @@ const PERMISSIONS = {
   manage_printing: ["Super Admin", "Administrator", "Printing Staff"],
   manage_teachers: ["Super Admin", "Administrator", "Office Staff"],
   manage_documents: ["Super Admin", "Administrator", "Office Staff", "Department Staff"],
-  manage_suppliers: ["Super Admin", "Administrator", "Store Keeper"],
-  manage_purchases: ["Super Admin", "Administrator", "Store Keeper"],
   view_reports: ["Super Admin", "Administrator", "Office Staff", "Store Keeper"],
   manage_users: ["Super Admin", "Administrator"],
   manage_settings: ["Super Admin", "Administrator"],

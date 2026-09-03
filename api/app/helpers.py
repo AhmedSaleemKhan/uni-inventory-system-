@@ -2,17 +2,11 @@
 
 from __future__ import annotations
 
-import datetime as dt
 import random
-import uuid
 
 
 def generate_barcode() -> str:
     return "ITM" + "".join(random.choices("0123456789", k=9))
-
-
-def generate_invoice_number() -> str:
-    return f"INV-{dt.date.today().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
 
 
 def generate_employee_id() -> str:

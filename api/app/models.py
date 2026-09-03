@@ -75,22 +75,6 @@ class Category(Base):
     items: Mapped[List["Item"]] = relationship(back_populates="category")
 
 
-class Supplier(Base):
-    __tablename__ = "suppliers"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(150), nullable=False)
-    address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    phone: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
-    email: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
-    gst_number: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
-    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=now)
-
-    items: Mapped[List["Item"]] = relationship(back_populates="supplier")
-    purchase_orders: Mapped[List["PurchaseOrder"]] = relationship(back_populates="supplier")
-
-
 class Item(Base):
     __tablename__ = "items"
 
@@ -100,24 +84,17 @@ class Item(Base):
     name: Mapped[str] = mapped_column(String(150), nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     brand: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    supplier_id: Mapped[Optional[int]] = mapped_column(ForeignKey("suppliers.id"), nullable=True)
-    purchase_date: Mapped[Optional[dt.date]] = mapped_column(Date, nullable=True)
-    purchase_cost: Mapped[float] = mapped_column(Float, default=0.0)
-    selling_cost: Mapped[float] = mapped_column(Float, default=0.0)
     unit: Mapped[str] = mapped_column(String(30), default="pcs")
     current_quantity: Mapped[int] = mapped_column(Integer, default=0)
     minimum_quantity: Mapped[int] = mapped_column(Integer, default=5)
     maximum_quantity: Mapped[int] = mapped_column(Integer, default=1000)
-    storage_location: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     status: Mapped[str] = mapped_column(String(30), default="Active")
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=now)
     updated_at: Mapped[dt.datetime] = mapped_column(DateTime, default=now, onupdate=now)
 
     category: Mapped["Category"] = relationship(back_populates="items")
-    supplier: Mapped[Optional["Supplier"]] = relationship(back_populates="items")
     issue_records: Mapped[List["IssueRecord"]] = relationship(back_populates="item")
-    purchase_items: Mapped[List["PurchaseItem"]] = relationship(back_populates="item")
 
     @property
     def is_low_stock(self) -> bool:
@@ -223,36 +200,6 @@ class DocumentRecord(Base):
     remarks: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     teacher: Mapped[Optional["Teacher"]] = relationship(back_populates="documents")
-
-
-class PurchaseOrder(Base):
-    __tablename__ = "purchase_orders"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    invoice_number: Mapped[str] = mapped_column(String(60), unique=True, nullable=False)
-    supplier_id: Mapped[int] = mapped_column(ForeignKey("suppliers.id"), nullable=False)
-    order_date: Mapped[dt.date] = mapped_column(Date, default=dt.date.today)
-    tax_percent: Mapped[float] = mapped_column(Float, default=0.0)
-    total_amount: Mapped[float] = mapped_column(Float, default=0.0)
-    payment_status: Mapped[str] = mapped_column(String(30), default="Unpaid")
-    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-
-    supplier: Mapped["Supplier"] = relationship(back_populates="purchase_orders")
-    purchase_items: Mapped[List["PurchaseItem"]] = relationship(back_populates="purchase_order", cascade="all, delete-orphan")
-
-
-class PurchaseItem(Base):
-    __tablename__ = "purchase_items"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    purchase_order_id: Mapped[int] = mapped_column(ForeignKey("purchase_orders.id"), nullable=False)
-    item_id: Mapped[int] = mapped_column(ForeignKey("items.id"), nullable=False)
-    quantity: Mapped[int] = mapped_column(Integer, default=1)
-    unit_cost: Mapped[float] = mapped_column(Float, default=0.0)
-    line_total: Mapped[float] = mapped_column(Float, default=0.0)
-
-    purchase_order: Mapped["PurchaseOrder"] = relationship(back_populates="purchase_items")
-    item: Mapped["Item"] = relationship(back_populates="purchase_items")
 
 
 class Notification(Base):

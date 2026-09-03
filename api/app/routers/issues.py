@@ -68,6 +68,8 @@ def generate_requisition(issue_id: int, db: Session = Depends(db_dependency),
     from reportlab.platypus import (
         SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, HRFlowable,
     )
+    from reportlab.graphics.barcode.qr import QrCodeWidget
+    from reportlab.graphics.shapes import Drawing
     from .. import config
 
     record = db.get(IssueRecord, issue_id)
@@ -147,15 +149,39 @@ def generate_requisition(issue_id: int, db: Session = Depends(db_dependency),
     elements.append(req_table)
     elements.append(Spacer(1, 16))
 
-    sign_table = Table(
-        [[Paragraph("Store In-Charge: ______________________________", sign_style),
-          Paragraph("HOD: ______________________________", sign_style)]],
-        colWidths=[doc.width / 2, doc.width / 2],
+    qr_caption_style = ParagraphStyle("ReqQrCaption", parent=styles["Normal"], alignment=TA_CENTER,
+                                       fontSize=7.5, textColor=colors.grey)
+    qr_data = (
+        f"UAIMS Internal Requisition\n"
+        f"Serial No: {record.id}\n"
+        f"Item: {item.name if item else '-'} (Qty: {record.quantity})\n"
+        f"Issued To: {teacher.name if teacher else '-'} - {teacher.department if teacher else '-'}\n"
+        f"Date: {record.issue_date.strftime('%d-%b-%Y')}"
     )
-    sign_table.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0)]))
+    qr_widget = QrCodeWidget(qr_data)
+    qr_bounds = qr_widget.getBounds()
+    qr_size = 17 * mm
+    qr_drawing = Drawing(
+        qr_size, qr_size,
+        transform=[qr_size / (qr_bounds[2] - qr_bounds[0]), 0, 0, qr_size / (qr_bounds[3] - qr_bounds[1]), 0, 0],
+    )
+    qr_drawing.add(qr_widget)
+    qr_drawing.hAlign = "CENTER"
+
+    sign_table = Table(
+        [[
+            [qr_drawing, Spacer(1, 3), Paragraph(f"Serial No: {record.id}", qr_caption_style)],
+            Paragraph("Store In-Charge: ____________________", sign_style),
+            Paragraph("Received By: ____________________", sign_style),
+        ]],
+        colWidths=[doc.width * 0.22, doc.width * 0.39, doc.width * 0.39],
+    )
+    sign_table.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("ALIGN", (0, 0), (0, -1), "CENTER"),
+        ("LEFTPADDING", (1, 0), (-1, -1), 0),
+    ]))
     elements.append(sign_table)
-    elements.append(Spacer(1, 16))
-    elements.append(Paragraph("Received By: ______________________________", sign_style))
 
     doc.build(elements)
 
