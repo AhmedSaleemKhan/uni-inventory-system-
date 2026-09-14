@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -8,7 +10,6 @@ from ..database import db_dependency
 from ..models import Teacher
 from ..schemas import TeacherIn, TeacherOut
 from ..security import require_permission, log_audit, CurrentUser
-from ..helpers import generate_employee_id
 
 router = APIRouter(prefix="/api/teachers", tags=["teachers"])
 
@@ -21,8 +22,13 @@ def list_teachers(db: Session = Depends(db_dependency), _u: CurrentUser = Depend
 @router.post("", response_model=TeacherOut)
 def create_teacher(payload: TeacherIn, db: Session = Depends(db_dependency),
                     user: CurrentUser = Depends(require_permission("manage_teachers"))):
-    teacher = Teacher(employee_id=generate_employee_id(), **payload.model_dump())
+    # employee_id is this row's own sequence number, so it can only be
+    # assigned once the row's real id exists - insert with a placeholder
+    # unique value, then stamp the real "SES-0001" once the id is known.
+    teacher = Teacher(employee_id=f"__pending_{uuid.uuid4().hex}", **payload.model_dump())
     db.add(teacher)
+    db.flush()
+    teacher.employee_id = f"SES-{teacher.id:04d}"
     db.flush()
     log_audit(db, user.id, "TEACHER_SAVED", entity="Teacher", entity_id=teacher.id)
     db.refresh(teacher)

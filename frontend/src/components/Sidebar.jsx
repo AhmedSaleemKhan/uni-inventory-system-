@@ -23,7 +23,7 @@ export default function Sidebar({ role, onLogout }) {
     <div className="sidebar">
       <div className="sidebar-brand">
         <span className="brand-mark"><Boxes size={19} strokeWidth={2.4} /></span>
-        UAIMS
+        SCS Inventory
       </div>
       <div className="sidebar-role">{role}</div>
       <nav>

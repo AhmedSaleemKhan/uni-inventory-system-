@@ -1,6 +1,6 @@
 """
 app/config.py
-Central configuration for the UAIMS web backend. Reads DATABASE_URL from
+Central configuration for the SCS Inventory web backend. Reads DATABASE_URL from
 the environment so the exact same code runs against a local SQLite file
 (no setup needed) or a hosted Postgres database (Neon, Supabase, etc.) -
 just set the env var, nothing else changes.
@@ -42,7 +42,7 @@ JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "480"))
 # ---------------------------------------------------------------------------
 # Application
 # ---------------------------------------------------------------------------
-APP_NAME = "UAIMS - University Administration Inventory & Office Management System"
+APP_NAME = "SCS - School of Computing Sciences Inventory System"
 ORG_NAME = os.getenv("ORG_NAME", "PAF-IAST")
 ORG_FULL_NAME = os.getenv("ORG_FULL_NAME", "Pak-Austria Fachhochschule: Institute of Applied Sciences & Technology")
 ORG_ADDRESS = os.getenv("ORG_ADDRESS", "Mang, Haripur, Khyber Pakhtunkhwa")

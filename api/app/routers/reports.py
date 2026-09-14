@@ -21,8 +21,8 @@ REPORT_TYPES = [
 
 def _build(report_type: str, db: Session) -> tuple[list[str], list[list]]:
     if report_type == "Inventory Report":
-        headers = ["ID", "Barcode", "Category", "Name", "Qty", "Min Qty", "Unit", "Status"]
-        rows = [[i.id, i.barcode, i.category.name if i.category else "-", i.name,
+        headers = ["ID", "Diary No", "Category", "Name", "Qty", "Min Qty", "Unit", "Status"]
+        rows = [[i.id, i.diary_no, i.category.name if i.category else "-", i.name,
                  i.current_quantity, i.minimum_quantity, i.unit, i.status]
                 for i in db.query(Item).all()]
     elif report_type == "Low Stock Report":
@@ -42,8 +42,10 @@ def _build(report_type: str, db: Session) -> tuple[list[str], list[list]]:
         rows = [[r.id, r.teacher.name if r.teacher else "-", r.item.name if r.item else "-",
                  r.quantity, r.issue_date, r.status] for r in db.query(IssueRecord).all()]
     elif report_type == "Return Report":
-        headers = ["Issue ID", "Returned Qty", "Return Date", "Condition", "Late?"]
-        rows = [[rr.issue_id, rr.returned_quantity, rr.return_date, rr.condition, "Yes" if rr.is_late else "No"]
+        headers = ["Issue ID", "Issued Qty", "Returned Qty", "Remaining Qty", "Return Date", "Condition", "Late?"]
+        rows = [[rr.issue_id, rr.issue_record.quantity if rr.issue_record else "-", rr.returned_quantity,
+                 (rr.issue_record.quantity - rr.returned_quantity) if rr.issue_record else "-",
+                 rr.return_date, rr.condition, "Yes" if rr.is_late else "No"]
                 for rr in db.query(ReturnRecord).all()]
     elif report_type == "Pending Documents Report":
         headers = ["ID", "Type", "Title", "Department", "Received Date"]
@@ -116,7 +118,7 @@ def export_pdf(report_type: str, db: Session = Depends(db_dependency),
     buf = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=25 * mm, bottomMargin=18 * mm)
     styles = getSampleStyleSheet()
-    primary_dark = colors.HexColor("#023E47")
+    primary_dark = colors.HexColor("#28466B")
     title_style = ParagraphStyle("Title2", parent=styles["Title"], textColor=primary_dark, fontSize=18)
     sub_style = ParagraphStyle("Sub2", parent=styles["Normal"], textColor=colors.grey, fontSize=9)
 

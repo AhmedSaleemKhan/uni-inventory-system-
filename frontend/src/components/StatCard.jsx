@@ -1,4 +1,4 @@
-export default function StatCard({ label, value, color = "#028090" }) {
+export default function StatCard({ label, value, color = "#3D6EA3" }) {
   return (
     <div className="stat-card" style={{ "--stat-color": color }}>
       <div className="bar" style={{ background: color }} />

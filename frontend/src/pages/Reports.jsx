@@ -14,7 +14,15 @@ export default function Reports() {
   const [exporting, setExporting] = useState("");
 
   useEffect(() => {
-    api.get(`/reports/${encodeURIComponent(reportType)}`).then(setData).catch((e) => setError(e.message));
+    // A response for a report type the user has since switched away from
+    // can still land after the current one (out-of-order network replies,
+    // React StrictMode's double-invoked effects) - ignore it so it can't
+    // clobber the report actually on screen.
+    let ignore = false;
+    api.get(`/reports/${encodeURIComponent(reportType)}`)
+      .then((d) => { if (!ignore) setData(d); })
+      .catch((e) => { if (!ignore) setError(e.message); });
+    return () => { ignore = true; };
   }, [reportType]);
 
   async function handleExport(fmt) {

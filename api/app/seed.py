@@ -13,7 +13,6 @@ import random
 from . import config
 from .security import hash_password
 from .database import get_session
-from .helpers import generate_barcode, generate_employee_id
 from .models import (
     User, Category, Item, Teacher, IssueRecord, ReturnRecord,
     PrintingRecord, DocumentRecord, Notification,
@@ -38,7 +37,6 @@ DESIGNATIONS = [
     "Lecturer", "Assistant Professor", "Associate Professor", "Professor", "Visiting Faculty",
     "Lab Engineer", "Administrative Staff",
 ]
-BRANDS = ["Dollar", "Pentel", "Faber-Castell", "Deli", "Kangaro", "Camlin", "HP", "Canon", "Epson", "Generic"]
 FIRST_NAMES = [
     "Ahmed", "Ali", "Sara", "Ayesha", "Bilal", "Hassan", "Fatima", "Usman",
     "Hira", "Zainab", "Omar", "Sana", "Kamran", "Nida", "Faisal", "Mahnoor",
@@ -94,10 +92,9 @@ def seed_all() -> None:
             qty = random.randint(0, 500)
             min_q = random.randint(10, 50)
             items.append(Item(
-                barcode=generate_barcode(), category_id=category.id,
+                diary_no=f"__pending_{i}", category_id=category.id,
                 name=f"{category.name} - Type {chr(65 + (i % 5))}",
                 description=f"Standard office supply item under {category.name} category.",
-                brand=random.choice(BRANDS),
                 unit=random.choice(["pcs", "box", "ream", "pack", "dozen"]),
                 current_quantity=qty, minimum_quantity=min_q,
                 maximum_quantity=min_q * random.randint(10, 30),
@@ -105,12 +102,16 @@ def seed_all() -> None:
             ))
         session.add_all(items)
         session.flush()
+        # diary_no is the row's own register number, so it can only be
+        # assigned once the row's real id exists.
+        for it in items:
+            it.diary_no = f"DN-{it.id:05d}"
 
         teachers = []
         for i in range(1, 31):
             dept = random.choice(DEPARTMENTS)
             teachers.append(Teacher(
-                employee_id=generate_employee_id(), name=_random_name(), department=dept,
+                employee_id=f"__pending_{i}", name=_random_name(), department=dept,
                 designation=random.choice(DESIGNATIONS),
                 phone=f"03{random.randint(0, 99):02d}{random.randint(1000000, 9999999)}",
                 email=f"faculty{i}@pafiast.edu.pk", office_number=f"F-{random.randint(100, 399)}",
@@ -118,6 +119,8 @@ def seed_all() -> None:
             ))
         session.add_all(teachers)
         session.flush()
+        for t in teachers:
+            t.employee_id = f"SES-{t.id:04d}"
 
         issue_records = []
         for i in range(1, 51):

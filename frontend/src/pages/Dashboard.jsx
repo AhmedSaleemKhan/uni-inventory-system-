@@ -168,14 +168,14 @@ export default function Dashboard() {
       <h1 className="page-title-heading">Welcome back, {user.full_name}</h1>
 
       <div className="stat-grid">
-        <StatCard label="Total Inventory Items" value={data.total_items} color="#028090" />
+        <StatCard label="Total Inventory Items" value={data.total_items} color="#3D6EA3" />
         <StatCard label="Available Stock (units)" value={data.available_stock} color="#2E8B57" />
-        <StatCard label="Low Stock Items" value={data.low_stock} color="#A3690A" />
+        <StatCard label="Low Stock Items" value={data.low_stock} color="#B35A0D" />
         <StatCard label="Out of Stock Items" value={data.out_of_stock} color="#D64545" />
-        <StatCard label="Today's Issued Items" value={data.today_issued} color="#028090" />
-        <StatCard label="Today's Returned Items" value={data.today_returned} color="#028090" />
-        <StatCard label="Today's Printing Jobs" value={data.today_printing} color="#028090" />
-        <StatCard label="Pending Documents" value={data.pending_docs} color="#A3690A" />
+        <StatCard label="Today's Issued Items" value={data.today_issued} color="#3D6EA3" />
+        <StatCard label="Today's Returned Items" value={data.today_returned} color="#3D6EA3" />
+        <StatCard label="Today's Printing Jobs" value={data.today_printing} color="#3D6EA3" />
+        <StatCard label="Pending Documents" value={data.pending_docs} color="#B35A0D" />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16, marginBottom: 20 }}>

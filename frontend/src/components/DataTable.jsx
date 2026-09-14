@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus, Search } from "lucide-react";
+
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100, 200];
 
 /**
  * Generic "title + search + filter + add button + table" page shell -
@@ -11,6 +13,8 @@ export default function DataTable({
 }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
+  const [pageSize, setPageSize] = useState(25);
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     return rows.filter((row) => {
@@ -21,6 +25,17 @@ export default function DataTable({
       return matchesQuery && matchesFilter;
     });
   }, [rows, query, filter, columns, filterKey]);
+
+  // A new search/filter/page-size can easily leave the current page past
+  // the end of the (now smaller) result set - reset to page 1 instead of
+  // rendering an empty page.
+  useEffect(() => { setPage(1); }, [query, filter, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const startIdx = filtered.length === 0 ? 0 : (safePage - 1) * pageSize + 1;
+  const endIdx = Math.min(safePage * pageSize, filtered.length);
+  const pageRows = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
 
   return (
     <div>
@@ -47,10 +62,10 @@ export default function DataTable({
             <tr>{columns.map((c) => <th key={c.key}>{c.label}</th>)}</tr>
           </thead>
           <tbody>
-            {filtered.length === 0 && (
+            {pageRows.length === 0 && (
               <tr><td colSpan={columns.length}><div className="empty-state">No records found.</div></td></tr>
             )}
-            {filtered.map((row) => (
+            {pageRows.map((row) => (
               <tr
                 key={row.id}
                 className={selectedId === row.id ? "selected" : ""}
@@ -64,6 +79,26 @@ export default function DataTable({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="table-footer">
+        <div className="page-size-control">
+          Display
+          <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+            {PAGE_SIZE_OPTIONS.map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+          records
+        </div>
+        <div className="pagination-controls">
+          <span>
+            {filtered.length === 0
+              ? "No entries"
+              : `Showing ${startIdx} to ${endIdx} of ${filtered.length} entries`}
+          </span>
+          <div className="pagination-buttons">
+            <button disabled={safePage <= 1} onClick={() => setPage(safePage - 1)}>Previous</button>
+            <button disabled={safePage >= totalPages} onClick={() => setPage(safePage + 1)}>Next</button>
+          </div>
+        </div>
       </div>
     </div>
   );

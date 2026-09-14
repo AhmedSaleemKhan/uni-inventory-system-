@@ -78,7 +78,6 @@ class ItemIn(BaseModel):
     category: str
     name: str
     description: Optional[str] = ""
-    brand: Optional[str] = ""
     unit: str = "pcs"
     current_quantity: int = 0
     minimum_quantity: int = 10
@@ -89,11 +88,10 @@ class ItemIn(BaseModel):
 
 class ItemOut(BaseModel):
     id: int
-    barcode: str
+    diary_no: str
     category: str
     name: str
     description: Optional[str] = None
-    brand: Optional[str] = None
     unit: str
     current_quantity: int
     minimum_quantity: int

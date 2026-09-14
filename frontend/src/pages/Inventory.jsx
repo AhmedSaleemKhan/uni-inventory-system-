@@ -29,7 +29,6 @@ export default function Inventory() {
     { key: "category", label: "Category", kind: "select", options: categories, required: true },
     { key: "name", label: "Item Name", required: true },
     { key: "description", label: "Description", kind: "textarea" },
-    { key: "brand", label: "Brand" },
     { key: "unit", label: "Unit", kind: "select", options: UNITS },
     { key: "current_quantity", label: "Current Quantity", kind: "number", max: 100000 },
     { key: "minimum_quantity", label: "Minimum Quantity", kind: "number", max: 100000, default: 10 },
@@ -59,9 +58,14 @@ export default function Inventory() {
   }
 
   const columns = [
-    { key: "id", label: "ID" }, { key: "barcode", label: "Barcode" }, { key: "category", label: "Category" },
-    { key: "name", label: "Name" }, { key: "brand", label: "Brand" },
-    { key: "unit", label: "Unit" }, { key: "current_quantity", label: "Qty" }, { key: "minimum_quantity", label: "Min Qty" },
+    { key: "id", label: "ID" }, { key: "diary_no", label: "Diary No" }, { key: "category", label: "Category" },
+    { key: "name", label: "Name" }, { key: "unit", label: "Unit" },
+    {
+      key: "current_quantity", label: "Qty", render: (r) => (
+        <span className={r.current_quantity < 20 ? "qty-critical" : ""}>{r.current_quantity}</span>
+      ),
+    },
+    { key: "minimum_quantity", label: "Min Qty" },
     {
       key: "status", label: "Status", render: (r) => (
         <span className={`pill ${r.is_out_of_stock ? "danger" : r.is_low_stock ? "warn" : "success"}`}>

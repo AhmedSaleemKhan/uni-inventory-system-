@@ -79,11 +79,10 @@ class Item(Base):
     __tablename__ = "items"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    barcode: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
+    diary_no: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
     name: Mapped[str] = mapped_column(String(150), nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    brand: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     unit: Mapped[str] = mapped_column(String(30), default="pcs")
     current_quantity: Mapped[int] = mapped_column(Integer, default=0)
     minimum_quantity: Mapped[int] = mapped_column(Integer, default=5)

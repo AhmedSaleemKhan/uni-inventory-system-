@@ -152,7 +152,7 @@ def generate_requisition(issue_id: int, db: Session = Depends(db_dependency),
     qr_caption_style = ParagraphStyle("ReqQrCaption", parent=styles["Normal"], alignment=TA_CENTER,
                                        fontSize=7.5, textColor=colors.grey)
     qr_data = (
-        f"UAIMS Internal Requisition\n"
+        f"SCS Internal Requisition\n"
         f"Serial No: {record.id}\n"
         f"Item: {item.name if item else '-'} (Qty: {record.quantity})\n"
         f"Issued To: {teacher.name if teacher else '-'} - {teacher.department if teacher else '-'}\n"

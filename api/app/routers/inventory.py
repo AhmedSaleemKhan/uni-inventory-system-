@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -8,15 +10,14 @@ from ..database import db_dependency
 from ..models import Item, Category
 from ..schemas import ItemIn, ItemOut, CategoryOut
 from ..security import require_permission, log_audit, CurrentUser
-from ..helpers import generate_barcode
 
 router = APIRouter(prefix="/api/inventory", tags=["inventory"])
 
 
 def _to_out(item: Item) -> ItemOut:
     return ItemOut(
-        id=item.id, barcode=item.barcode, category=item.category.name if item.category else "-",
-        name=item.name, description=item.description, brand=item.brand, unit=item.unit,
+        id=item.id, diary_no=item.diary_no, category=item.category.name if item.category else "-",
+        name=item.name, description=item.description, unit=item.unit,
         current_quantity=item.current_quantity, minimum_quantity=item.minimum_quantity,
         maximum_quantity=item.maximum_quantity, status=item.status, notes=item.notes,
         is_low_stock=item.is_low_stock, is_out_of_stock=item.is_out_of_stock,
@@ -41,11 +42,16 @@ def create_item(payload: ItemIn, db: Session = Depends(db_dependency),
     if not category:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Unknown category")
 
-    item = Item(barcode=generate_barcode(), category_id=category.id, name=payload.name,
-                description=payload.description, brand=payload.brand, unit=payload.unit,
+    # diary_no is the item's own row number in the register, so it can only
+    # be known once the row exists - insert with a placeholder unique value,
+    # then stamp the real "DN-00001" once the id is assigned.
+    item = Item(diary_no=f"__pending_{uuid.uuid4().hex}", category_id=category.id, name=payload.name,
+                description=payload.description, unit=payload.unit,
                 current_quantity=payload.current_quantity, minimum_quantity=payload.minimum_quantity,
                 maximum_quantity=payload.maximum_quantity, status=payload.status, notes=payload.notes)
     db.add(item)
+    db.flush()
+    item.diary_no = f"DN-{item.id:05d}"
     db.flush()
     log_audit(db, user.id, "ITEM_SAVED", entity="Item", entity_id=item.id)
     db.refresh(item)
@@ -63,7 +69,6 @@ def update_item(item_id: int, payload: ItemIn, db: Session = Depends(db_dependen
     item.category_id = category.id if category else item.category_id
     item.name = payload.name
     item.description = payload.description
-    item.brand = payload.brand
     item.unit = payload.unit
     item.current_quantity = payload.current_quantity
     item.minimum_quantity = payload.minimum_quantity
